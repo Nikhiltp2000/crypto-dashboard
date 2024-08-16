@@ -1,32 +1,22 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { CryptoCoin } from "./CryptoCoin";
-import { Pagination } from './Pagination';
+import { CryptoCoin } from "./components/CryptoCoin";
+import { Pagination } from './services/Pagination';
+import {CryptoCoins} from  "../src/models/crypto-interface";
+import { fetchCryptoCoins } from "./services/apiService";
 
-export interface ICoinsType {
-  name: string;
-  image: string;
-  symbol: string;
-  current_price: number;
-  price_change_percentage_24h: number;
-  market_cap: number;
-  total_volume: number;
-  circulating_supply: number;
-}
+
 
 export const App: React.FunctionComponent = () => {
 
-  const [coins, setCoins] = useState<ICoinsType[]>([]);
+  const [coins, setCoins] = useState<CryptoCoins.ICryptoCoinType[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [rowsPerPage] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>("");
-
+  // Api call
   useEffect(() => {
-    axios.get("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false")
-      .then((res) => {
-        setCoins(res.data);
-      })
-      .catch((error) => alert(error + " Please try refreshing the page...!!!"))
+    fetchCryptoCoins()
+      .then((data) => setCoins(data))
+      .catch((error) => alert(error.message + " Please try refreshing the page...!!!"))
   }, []);
 
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -87,11 +77,11 @@ export const App: React.FunctionComponent = () => {
                           image={item?.image}
                           name={item?.name}
                           symbol={item?.symbol}
-                          price={item?.current_price}
-                          perc24h={item?.price_change_percentage_24h}
-                          marketCap={item?.market_cap}
-                          volume={item?.total_volume}
-                          circSupply={item?.circulating_supply}
+                          current_price={item?.current_price}
+                          price_change_percentage_24h={item?.price_change_percentage_24h}
+                          market_cap={item?.market_cap}
+                          total_volume={item?.total_volume}
+                          circulating_supply={item?.circulating_supply}
                         />
                       );
                     }
@@ -108,11 +98,11 @@ export const App: React.FunctionComponent = () => {
                         image={item?.image}
                         name={item?.name}
                         symbol={item?.symbol}
-                        price={item?.current_price}
-                        perc24h={item?.price_change_percentage_24h}
-                        marketCap={item?.market_cap}
-                        volume={item?.total_volume}
-                        circSupply={item?.circulating_supply}
+                        current_price={item?.current_price}
+                        price_change_percentage_24h={item?.price_change_percentage_24h}
+                        market_cap={item?.market_cap}
+                        total_volume={item?.total_volume}
+                        circulating_supply={item?.circulating_supply}
                       />
                     );
                   })
@@ -131,11 +121,6 @@ export const App: React.FunctionComponent = () => {
             setCurrentPage={setCurrentPage}
           />
         }
-
-        <a href="https://github.com/iamhiman/crypto-money" target="_blank" rel="noreferrer" className="view-code">
-          <p> View code</p>
-          <img src="https://img.icons8.com/fluent/100/000000/github.png" alt="github-logo" />
-        </a>
 
       </section>
     </>
